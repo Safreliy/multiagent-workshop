@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+results/
+.qa/
+presentation/multiagent-talk.zip
+node_modules/
+
+# Private presentation preparation materials
+presentation/speaker-notes.md
+presentation/speaker-expansion.md
+presentation/langgraph-issues-speaker.md
+presentation/harness-choice.md

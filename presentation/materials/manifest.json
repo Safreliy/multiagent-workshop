@@ -1,0 +1,294 @@
+{
+  "created_at": "2026-09-22T12:16:47.343419+00:00",
+  "blocks": 10,
+  "seed": 42,
+  "baseline_sha256": "52d611655ff3673b208375e812f147cb9152220d83915b19e7097e6a64ba02be",
+  "baseline_path": "../../db/hard-baseline.sql",
+  "fixture": "sql_agent_fixture_v2",
+  "profile": "query_only",
+  "statement_timeout_ms": 60000,
+  "warmup_per_query_per_pair": 1,
+  "pair_order": "alternating AB/BA across successive pairs",
+  "candidates": [
+    {
+      "id": "deepseek-single-1",
+      "model": "DeepSeek",
+      "architecture": "single",
+      "original_repetition": 1,
+      "original_speedup": 2.3537141294784374,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-single-r1.sql",
+      "source_record_sha256": "f245d1c30358a706f3382aaf36d3b21aef3f5880c41b901ad72d4f537878f6a6",
+      "sql_sha256": "71890aa29f7eecdaba95b830886956d3981a11b87c41e109b60825b93d6f6729"
+    },
+    {
+      "id": "deepseek-orchestrator-1",
+      "model": "DeepSeek",
+      "architecture": "orchestrator",
+      "original_repetition": 1,
+      "original_speedup": 2.3859856472150707,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-orchestrator-r1.sql",
+      "source_record_sha256": "099d4c6a26d147460ee3443f3d20070ac581b2f494d9454ba91899dbcd482785",
+      "sql_sha256": "f47a195b61522325bb25e4b8442c8781f6b2fcc2e0c81e90dec67d9fa0de7e98"
+    },
+    {
+      "id": "deepseek-swarm-1",
+      "model": "DeepSeek",
+      "architecture": "swarm",
+      "original_repetition": 1,
+      "original_speedup": 1.779855273691584,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-swarm-r1.sql",
+      "source_record_sha256": "67873a6ab053a0f2263434a4a2b05280e9bf23b69a5446f27f5f5a34c2327839",
+      "sql_sha256": "59d2d55e78228eb434bc3bafccf30d2d92b746e60e7d90c3c1be3cd0e5ebadce"
+    },
+    {
+      "id": "deepseek-single-2",
+      "model": "DeepSeek",
+      "architecture": "single",
+      "original_repetition": 2,
+      "original_speedup": 3.176445391901445,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-single-r2.sql",
+      "source_record_sha256": "e1bf499e35d01295c2265ec101dd66f76a276662e2fa936e7b7cda5dcb32de2b",
+      "sql_sha256": "13b7568acec36617f7080f69f0c898eadb81516044131abc6eb2722990340628"
+    },
+    {
+      "id": "deepseek-orchestrator-2",
+      "model": "DeepSeek",
+      "architecture": "orchestrator",
+      "original_repetition": 2,
+      "original_speedup": 1.984959482890451,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-orchestrator-r2.sql",
+      "source_record_sha256": "0fa8e2e843906f00cb4e22ea40789d10b0e95d1054db852e254b98fdefb99944",
+      "sql_sha256": "f632779ad1e411bf9ed4d6320d5d28d0ab9a9319fb1190555c92dc3780eac64e"
+    },
+    {
+      "id": "deepseek-swarm-2",
+      "model": "DeepSeek",
+      "architecture": "swarm",
+      "original_repetition": 2,
+      "original_speedup": 1.7261202625898389,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-swarm-r2.sql",
+      "source_record_sha256": "992abf50c75362c5f93ebe9cc80d7bdc9f1a26ac1ac6e923bd1afa81edc2d041",
+      "sql_sha256": "96a2b82cf1df7025440cda11c131dbeeba3b2fe876f72bde9de1e5691c8cad58"
+    },
+    {
+      "id": "deepseek-single-3",
+      "model": "DeepSeek",
+      "architecture": "single",
+      "original_repetition": 3,
+      "original_speedup": 2.1736787769215202,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-single-r3.sql",
+      "source_record_sha256": "02f930a61e7bb5a287018f09f287a4bac810faab7fd2c67e96f1a27b3902c5dd",
+      "sql_sha256": "830df9a53e5c15932593cca39f3bade36754c97678b9631ce2e0446cea75476f"
+    },
+    {
+      "id": "deepseek-orchestrator-3",
+      "model": "DeepSeek",
+      "architecture": "orchestrator",
+      "original_repetition": 3,
+      "original_speedup": 2.2452730341840903,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-orchestrator-r3.sql",
+      "source_record_sha256": "218f044eb63b494fc1967ea6551399ee6767e14ba46d0df38e559eb8c8f0f903",
+      "sql_sha256": "80b94ba27aed82d56d2100438adc9f5a99f9c39bba36e20e68565480071398fd"
+    },
+    {
+      "id": "deepseek-swarm-3",
+      "model": "DeepSeek",
+      "architecture": "swarm",
+      "original_repetition": 3,
+      "original_speedup": 2.3891992140065796,
+      "source_sql": "../../data/server-replay/candidates/deepseek-v4-flash-0731-swarm-r3.sql",
+      "source_record_sha256": "911043676f40646ebd5a3b552ec0f7840ddf8d924e59664faa36d46d907f3c84",
+      "sql_sha256": "3e13a4ad1a1566265ac804ed8c8e733e7f3116f07422da23b40170ee50feceeb"
+    },
+    {
+      "id": "luna-orchestrator-1",
+      "model": "Luna",
+      "architecture": "orchestrator",
+      "original_repetition": 1,
+      "original_speedup": 2.2791610988136646,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-orchestrator-r1.sql",
+      "source_record_sha256": "14d71de905d9766a8c05cc2e8064dc4cc6f87f4a318d83645356c5754acc1852",
+      "sql_sha256": "f3dd795487a78f2c22cfc0ac15d03b39dab78812075b41d0a9c419bae682df07"
+    },
+    {
+      "id": "luna-single-1",
+      "model": "Luna",
+      "architecture": "single",
+      "original_repetition": 1,
+      "original_speedup": 2.1504573199013004,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-single-r1.sql",
+      "source_record_sha256": "8b841fc1b17dd33029826b8559690d931185645eb8e2f55e0d492c94cbd24578",
+      "sql_sha256": "2351e73ea267b70dc2f60787e13b55df3e097b566c7438f2edb7e8247d858a42"
+    },
+    {
+      "id": "luna-swarm-1",
+      "model": "Luna",
+      "architecture": "swarm",
+      "original_repetition": 1,
+      "original_speedup": 2.501549947810435,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-swarm-r1.sql",
+      "source_record_sha256": "c7961db887a49e9ab605f538f3e85b26899461726809ca008d5459da4c35017e",
+      "sql_sha256": "1dc53b7921cebbd1facdfe2136df5ef29052dc3440ca272f666675f16648153d"
+    },
+    {
+      "id": "luna-swarm-2",
+      "model": "Luna",
+      "architecture": "swarm",
+      "original_repetition": 2,
+      "original_speedup": 2.4540129015385213,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-swarm-r2.sql",
+      "source_record_sha256": "961634f83f0e003f031e915199cc42eead49b9292a69dca643eac29b558f2cab",
+      "sql_sha256": "58a6103fe5fc9c4554fc00487a9e0470c52191a34f8dc2c77f1fc9882a0961b7"
+    },
+    {
+      "id": "luna-orchestrator-2",
+      "model": "Luna",
+      "architecture": "orchestrator",
+      "original_repetition": 2,
+      "original_speedup": 2.427669062810943,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-orchestrator-r2.sql",
+      "source_record_sha256": "de930f19d0cf116ce30b3e51b462a7202d9b1a133860799a19127471124e5154",
+      "sql_sha256": "6e967738571c4973173b0f0777a5bd113b30d3afdf0e05aa1581221e33ade32f"
+    },
+    {
+      "id": "luna-single-2",
+      "model": "Luna",
+      "architecture": "single",
+      "original_repetition": 2,
+      "original_speedup": 2.280614745625303,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-single-r2.sql",
+      "source_record_sha256": "023869e669c082e33cdfd8758adf20a3045b8affc9e4e2739a999538fbbbfe83",
+      "sql_sha256": "699128f2d6a19ebe38dca960b4f3805760c8039f979a971a424394aa81518c90"
+    },
+    {
+      "id": "luna-orchestrator-3",
+      "model": "Luna",
+      "architecture": "orchestrator",
+      "original_repetition": 3,
+      "original_speedup": 2.0171182174176505,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-orchestrator-r3.sql",
+      "source_record_sha256": "c620e2ac19cf5ebe140231ccf304ab145b5b05ac5f2e213104c91adc319b1ed7",
+      "sql_sha256": "7ab97692f5cb5aa6c7725f7997416937c376e620571ed284527ed967ff0042a4"
+    },
+    {
+      "id": "luna-swarm-3",
+      "model": "Luna",
+      "architecture": "swarm",
+      "original_repetition": 3,
+      "original_speedup": 2.305371827962763,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-swarm-r3.sql",
+      "source_record_sha256": "dc96234e19f4705ac550209234e698ab9db7e1a8364ecbf3c6a2f02d9e6b3364",
+      "sql_sha256": "6b6ff6ccfbd24cc11c400adf78dd2924ef8c3ac266ac6179fbd27d7989f9f77c"
+    },
+    {
+      "id": "luna-single-3",
+      "model": "Luna",
+      "architecture": "single",
+      "original_repetition": 3,
+      "original_speedup": 2.140550479111807,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-luna-latest-single-r3.sql",
+      "source_record_sha256": "cb926f4bdb1041f2dfd0ce241ae722042b64eaa065e437550305b2dc8e4c2d74",
+      "sql_sha256": "6124455462702ef5fca3120782b6a6161bdb9a0cfb2d8af36d4de25d3c2ea244"
+    },
+    {
+      "id": "sol-orchestrator-1",
+      "model": "Sol",
+      "architecture": "orchestrator",
+      "original_repetition": 1,
+      "original_speedup": 2.1857722984418295,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-orchestrator-r1.sql",
+      "source_record_sha256": "e83982d5e1a40b68cce526272af7be2887d6963b264314d06f8ee07c388c19db",
+      "sql_sha256": "40187224b0c8086b10827721f3ee463ff85d6fd18f979bf0a50f7d8b59666484"
+    },
+    {
+      "id": "sol-single-1",
+      "model": "Sol",
+      "architecture": "single",
+      "original_repetition": 1,
+      "original_speedup": 1.9987196776106246,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-single-r1.sql",
+      "source_record_sha256": "fa47797f6ef406176c379cde2ab1b4cedd6733d9f2f308271a942bdf4a933649",
+      "sql_sha256": "53195c6977fabd968468d1bf5dfb2c310a3adbf3d6ee7c7aa07051382fe4bbad"
+    },
+    {
+      "id": "sol-swarm-1",
+      "model": "Sol",
+      "architecture": "swarm",
+      "original_repetition": 1,
+      "original_speedup": 2.6716229296249545,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-swarm-r1.sql",
+      "source_record_sha256": "5b21bc747e1171c083aae051e2f755c341967c4c30d0ac6de7ed75981cde36aa",
+      "sql_sha256": "ade6b038ff5447c7c8112be51c468887587932c5d46a6fc8fcea5950d41aa984"
+    },
+    {
+      "id": "sol-swarm-2",
+      "model": "Sol",
+      "architecture": "swarm",
+      "original_repetition": 2,
+      "original_speedup": 2.45062352031971,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-swarm-r2.sql",
+      "source_record_sha256": "ad227df8f25eb84180855bdf13ac064e300e20860a1905a509273920b5d61ecc",
+      "sql_sha256": "144ff5bbf3019605566fa12b6c0162082b8513b5044beefa136360a9126cbe4a"
+    },
+    {
+      "id": "sol-orchestrator-2",
+      "model": "Sol",
+      "architecture": "orchestrator",
+      "original_repetition": 2,
+      "original_speedup": 1.9793920149866218,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-orchestrator-r2.sql",
+      "source_record_sha256": "8be6835f040522c97c2024c711d2784a7afd11cf7a5370b717c0db84bbb93e8c",
+      "sql_sha256": "9bbad2f0a50e3e17f996a1dfcc7216ee55facf441622e67207b1a25bbe511041"
+    },
+    {
+      "id": "sol-single-2",
+      "model": "Sol",
+      "architecture": "single",
+      "original_repetition": 2,
+      "original_speedup": 2.6933511504277963,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-single-r2.sql",
+      "source_record_sha256": "d88fc508bf212bdedfa499fd5a38bb384ff24650ccfe8f60d402517b70893adc",
+      "sql_sha256": "44e99c3401d9d532f0068e5574bd905415b07c3964e6a8e901073e052fc5f9d5"
+    },
+    {
+      "id": "sol-orchestrator-3",
+      "model": "Sol",
+      "architecture": "orchestrator",
+      "original_repetition": 3,
+      "original_speedup": 1.9478823567684538,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-orchestrator-r3.sql",
+      "source_record_sha256": "07e4ee280d9de79d9a7e290adc06fdfa1f33eef6bfad217aad88e221256a4d8f",
+      "sql_sha256": "f84e6c58370acd10a54ba90e38d2c52e62d5a658850123eea8d38e4e07c1f204"
+    },
+    {
+      "id": "sol-swarm-3",
+      "model": "Sol",
+      "architecture": "swarm",
+      "original_repetition": 3,
+      "original_speedup": 1.960266676738416,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-swarm-r3.sql",
+      "source_record_sha256": "13cf15954ee41723faf584497235a09a0ae52dfe3386f2a4d7b4eba5a184871d",
+      "sql_sha256": "75008d63b18bb3bf869ac15293325d65f4e57988bef88a6fb40451e196c3cec5"
+    },
+    {
+      "id": "sol-single-3",
+      "model": "Sol",
+      "architecture": "single",
+      "original_repetition": 3,
+      "original_speedup": 2.0766692039363743,
+      "source_sql": "../../data/server-replay/candidates/openai-gpt-5-6-sol-single-r3.sql",
+      "source_record_sha256": "4fd96586cf25dfa2c35f2bd6440eca496c3b5ed474e6e11b0b97f4a845bf2f29",
+      "sql_sha256": "df45675d3abef67d613c3253e412257a02a2c8007860cf2b6a3a4353ca941321"
+    }
+  ],
+  "measurement_database": "sqlbench_70b21c3e394d_candidate",
+  "same_clone_for_baseline_and_candidate": true,
+  "postgres_version": "16.4 (Debian 16.4-1.pgdg120+2)",
+  "settings": {
+    "shared_buffers": "128MB",
+    "work_mem": "4MB",
+    "max_parallel_workers_per_gather": "2",
+    "effective_cache_size": "4GB",
+    "jit": "on"
+  }
+}

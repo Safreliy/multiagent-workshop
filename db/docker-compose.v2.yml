@@ -1,0 +1,32 @@
+name: sql-agent-scaling-v2
+
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.v2
+    environment:
+      POSTGRES_DB: sql_agent_fixture_v2
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: --auth-host=trust --auth-local=trust
+    command: ["postgres", "-c", "shared_preload_libraries=pg_hint_plan"]
+    ports:
+      - "127.0.0.1:${SQL_AGENT_V2_POSTGRES_PORT:-55433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 120
+      start_period: 240s
+    volumes:
+      - sql_agent_v2_pgdata:/var/lib/postgresql/data
+      - ./extensions.sql:/docker-entrypoint-initdb.d/05-extensions.sql:ro
+      - ./schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./hard-schema.sql:/docker-entrypoint-initdb.d/15-hard-schema.sql:ro
+      - ./seed.sql:/docker-entrypoint-initdb.d/20-seed.sql:ro
+      - ./hard-seed.sql:/docker-entrypoint-initdb.d/25-hard-seed.sql:ro
+      - ./freeze-template.sql:/docker-entrypoint-initdb.d/99-freeze-template.sql:ro
+
+volumes:
+  sql_agent_v2_pgdata:

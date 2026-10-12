@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Agent Lab · живое демо</title>
+  <link rel="stylesheet" href="live.css">
+  <script src="live.js" defer></script>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div><span class="kicker">SQL AGENT LAB / LIVE</span><h1>Оптимизация SQL с агентами</h1></div>
+    <div class="topmeta"><span class="live-indicator"></span> LLM + изолированный PostgreSQL <a href="http://127.0.0.1:8768/index.html#demo" target="_top">Слайды ↗</a></div>
+  </header>
+  <section class="settings" aria-label="Настройки">
+    <label>Архитектура <select id="architecture">
+      <option value="single">Single agent</option>
+      <option value="orchestrator">Оркестратор</option>
+      <option value="swarm">Swarm с handoff</option>
+      <option value="board_swarm" selected>Параллельный swarm + доска</option>
+    </select></label>
+    <label>Модель <select id="model"><option value="">Загрузка…</option></select></label>
+    <div class="limit"><small>Лимит на прогон</small><strong id="budget">—</strong></div>
+    <button id="stop" class="stop" disabled>Остановить</button>
+    <a class="expand" href="http://127.0.0.1:8769/live.html" target="_blank" rel="noopener">Развернуть ↗</a>
+  </section>
+  <section class="workspace">
+    <div class="analysis-column">
+      <article class="panel pipeline-panel">
+        <div class="panel-heading"><div><small>ПАЙПЛАЙН</small><h2 id="graph-title">Single agent</h2></div><span id="stage" class="stage">Ожидание</span></div>
+        <p id="graph-desc" class="description"></p>
+        <div id="graph" class="graph"></div>
+        <div id="transitions" class="transitions"></div>
+      </article>
+      <article id="board-panel" class="panel board-panel" hidden>
+        <div class="panel-heading"><div><small>ОБЩИЕ АРТЕФАКТЫ</small><h2>Доска гипотез</h2></div><span id="board-revision" class="revision">r0</span></div>
+        <div id="board" class="board"><p class="muted">Публикации появятся при параллельном исследовании.</p></div>
+      </article>
+      <article class="panel result-panel">
+        <div class="panel-heading"><div><small>ДЕТЕРМИНИРОВАННАЯ ПРОВЕРКА</small><h2>Результат</h2></div></div>
+        <div class="metrics">
+          <div><small>Корректность</small><strong id="correct">—</strong></div>
+          <div><small>Ускорение</small><strong id="speedup">—</strong></div>
+          <div><small>Токены</small><strong id="tokens">—</strong></div>
+          <div><small>LLM</small><strong id="llm-calls">—</strong></div>
+          <div><small>Tools</small><strong id="tool-calls">—</strong></div>
+          <div><small>Стоимость*</small><strong id="cost">—</strong></div>
+        </div>
+        <p class="result-note">* Для прямого DeepSeek цена не известна: действуют лимиты вызовов и токенов ответа. Каждый новый запрос начинает отдельный прогон с новой копией БД.</p>
+      </article>
+    </div>
+    <article class="panel chat-panel">
+      <div class="panel-heading chat-heading"><div><small>ЧАТ / РЕАЛЬНЫЕ СОБЫТИЯ</small><h2>Задача и ход поиска</h2></div><span id="elapsed">00:00</span></div>
+      <div id="feed" class="feed" role="log" aria-live="polite"><div class="welcome">Вставьте свой SELECT и опишите, что оптимизировать. Агент получит доступ к схеме, EXPLAIN, статистике и проверке результата.</div></div>
+      <form id="composer" class="composer">
+        <div class="composer-title"><strong>Ваш запрос</strong><button type="button" id="sample" class="text-button">Вставить пример SQL</button><button type="button" id="schema" class="text-button">Схема БД</button></div>
+        <textarea id="sql" aria-label="Исходный SQL" placeholder="SELECT ..." spellcheck="false"></textarea>
+        <div class="composer-bottom"><input id="instruction" type="text" maxlength="2000" aria-label="Пожелания к оптимизации" placeholder="Пожелания или следующий вопрос (необязательно)"><button id="start" class="send" type="submit" disabled>Оптимизировать ↗</button></div>
+        <p class="composer-note">SELECT без изменения данных · до 20 000 символов SQL · новый ход = новый изолированный прогон</p>
+      </form>
+    </article>
+  </section>
+  <div id="message" class="message" role="status"></div>
+</main>
+</body>
+</html>

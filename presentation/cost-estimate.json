@@ -1,0 +1,72 @@
+{
+  "as_of": "2026-09-28",
+  "deepseek": {
+    "source": "https://openrouter.ai/deepseek/deepseek-v4-flash-0731",
+    "provider": "Relace",
+    "input_per_million_usd": 0.021,
+    "output_per_million_usd": 0.32,
+    "method": "Counterfactual OpenRouter estimate for original local-endpoint generation; observed cache tokens zero.",
+    "groups": [
+      {
+        "model": "DeepSeek",
+        "architecture": "single",
+        "input_tokens": 3855401,
+        "output_tokens": 106770,
+        "estimate_usd": 0.115129821
+      },
+      {
+        "model": "DeepSeek",
+        "architecture": "orchestrator",
+        "input_tokens": 1953210,
+        "output_tokens": 92891,
+        "estimate_usd": 0.07074253
+      },
+      {
+        "model": "DeepSeek",
+        "architecture": "swarm",
+        "input_tokens": 537632,
+        "output_tokens": 32380,
+        "estimate_usd": 0.021651872000000003
+      }
+    ]
+  },
+  "luna": {
+    "source": "https://openrouter.ai/openai/gpt-5.6-luna",
+    "resolved_trace_model": "openai/gpt-5.6-luna",
+    "input_per_million_usd": 0.2,
+    "output_per_million_usd": 1.2,
+    "cache_read_per_million_usd": 0.02,
+    "cache_write_per_million_usd": 0.25,
+    "method": "Recorded usage including cache writes/reads reproduces provider cost; single excludes one timed-out call with unknown usage.",
+    "groups": [
+      {
+        "architecture": "single",
+        "cost_usd": 0.192891,
+        "lower_bound": true,
+        "input_tokens": 701353,
+        "output_tokens": 15209,
+        "cache_write_tokens": 698271,
+        "cache_read_tokens": 3022
+      },
+      {
+        "architecture": "orchestrator",
+        "cost_usd": 0.1250717,
+        "lower_bound": false,
+        "input_tokens": 359095,
+        "output_tokens": 30019,
+        "cache_write_tokens": 355845,
+        "cache_read_tokens": 3124
+      },
+      {
+        "architecture": "swarm",
+        "cost_usd": 0.0791224,
+        "lower_bound": false,
+        "input_tokens": 222212,
+        "output_tokens": 20344,
+        "cache_write_tokens": 218491,
+        "cache_read_tokens": 3652
+      }
+    ],
+    "formula": "((input-cache_write-cache_read)*0.20 + output*1.20 + cache_write*0.25 + cache_read*0.02)/1e6"
+  }
+}

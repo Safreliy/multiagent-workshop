@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Масштабирование интеллекта через мультиагентность</title><link rel="stylesheet" href="deck.css?v=math-15"></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1L9 5L0 9" fill="none" stroke="#8995aa" stroke-width="1.3"/></marker><marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1L9 5L0 9" fill="none" stroke="#2457ed" stroke-width="1.3"/></marker></defs></svg>
+<main class="stage">
+
+<section class="slide event-cover" data-title="Масштабирование интеллекта"><img src="assets/podlodka-cover.jpg" alt="Podlodka AI Crew, 12–16 октября. Савелий Батурин, Postgres Pro. Масштабирование интеллекта через мультиагентность — работает ли?"></section>
+
+<section class="slide revision speaker-slide" data-title="Савелий Батурин"><div class="eyebrow">О спикере</div><div class="speaker-layout"><div class="speaker-copy"><h2>Савелий<br>Батурин</h2><p class="speaker-role">Руководитель направления<br><b>ML/AI в Postgres Pro</b></p><div class="speaker-tags"><span>ML-инженер</span><span>Преподаватель</span><span>Автор статей на Хабр</span></div><a class="speaker-habr" href="https://habr.com/ru/users/Safreliy/articles/" target="_blank" rel="noopener"><img src="assets/qr-habr.svg" alt="QR: статьи Савелия на Хабр"><span>Статьи на Хабр ↗</span></a></div><div class="speaker-portrait"><img src="assets/savely-baturin.jpg" alt="Савелий Батурин"></div></div></section>
+
+<section class="slide revision " data-title="Кому и для каких задач"><div class="eyebrow">Для кого</div><h2>Когда один агент уже работает,<br>но хочется большего</h2><div class="rev-cards"><article><span>01</span><h3>Разработчикам</h3><p>Параллельный анализ репозитория, реализация и независимая проверка.</p></article><article><span>02</span><h3>Data / ML инженерам</h3><p>Оптимизация SQL: исследование планов, проверка гипотез и измерение ускорения.</p></article><article><span>03</span><h3>Авторам агентных систем</h3><p>Выбор архитектуры, проверка качества и контроль бюджета.</p></article></div><div class="rev-banner">Унесёте с собой: схему выбора архитектуры и воспроизводимый способ её проверить.</div></section>
+
+<section class="slide revision " data-title="Какую проблему решаем"><div class="eyebrow">Проблема</div><h2>Гипотез больше, чем помещается<br>в один последовательный поиск</h2><div class="rev-flow"><div><strong>Исследовать</strong><span>План, код, данные</span></div><b aria-hidden="true">→</b><div><strong>Предложить</strong><span>Несколько гипотез</span></div><b aria-hidden="true">→</b><div><strong>Проверить</strong><span>Корректность и метрика</span></div></div><div class="rev-cards"><article><span>01</span><h3>Один контекст</h3><p>Находки конкурируют за внимание; поиск может зафиксироваться на первой идее.</p></article><article><span>02</span><h3>Команда агентов</h3><p>Разделяет направления, но добавляет обмен контекстом и ожидание.</p></article><article><span>03</span><h3>Инженерный вопрос</h3><p>Кто планирует работу, хранит состояние и восстанавливает её после сбоя?</p></article></div></section>
+
+<section class="slide revision science-case math-case" data-title="Математика: параллельный поиск">
+<div class="eyebrow">Математика · сообщение OpenAI, сентябрь 2026</div>
+<h2>Навье–Стокс: параллельный поиск<br>и общий результат</h2>
+<p class="lede">Разные группы исследовали собственные направления и передавали друг другу полезные промежуточные выводы.</p>
+<div class="math-overview">
+  <div class="math-scale"><span class="math-dust" aria-hidden="true"></span><b>~10 000</b><span>агентов одновременно</span><small>130 млрд выходных токенов</small></div>
+  <div class="math-search"><div class="math-branches"><span><b>A</b><small>ветка поиска</small></span><span><b>B</b><small>ветка поиска</small></span><span><b>C</b><small>ветка поиска</small></span><span><b>D</b><small>ветка поиска</small></span></div><div class="math-converge"><span>Параллельные направления</span><i aria-hidden="true">↓</i><strong>Общее доказательство<br>и Lean-проверка</strong></div></div>
+</div>
+<a class="case-qr" href="https://openai.com/index/navier-stokes-solution/" target="_blank" rel="noopener"><img src="assets/qr-math.svg" alt="QR: первоисточник"><span>Первоисточник</span></a>
+</section>
+
+<section class="slide revision science-case verification-case" data-title="Математика: масштаб и проверка">
+<div class="eyebrow">Математика · проверка результата</div>
+<h2>OpenAI открыла математические<br>результаты и доказательства</h2>
+<p class="lede">722 рукописи в 372 семействах результатов. Многие уже формализованы в Lean; каталог доказательств опубликован вместе со статьями.</p>
+<div class="proof-board">
+  <div class="proof-space"><div class="proof-dots" aria-hidden="true"></div><b>722</b><span>математические рукописи</span><small style="font-size:24px;margin-top:18px;color:var(--muted)">372 семейства результатов</small></div>
+  <div class="proof-arrow" aria-hidden="true">→</div>
+  <div class="proof-stages"><div><em>01</em><strong>Рукописи</strong><span>PDF и исходники</span></div><div><em>02</em><strong>Lean</strong><span>формальные доказательства</span></div><div><em>03</em><strong>Проверка</strong><span>инструкции и конфигурации</span></div></div>
+</div>
+<a class="case-qr" href="https://github.com/openai/math" target="_blank" rel="noopener"><img src="assets/qr-math-release.svg" alt="QR: первоисточник"><span>Первоисточник</span></a>
+</section>
+
+<section class="slide revision science-case art-case" data-title="Наука: поиск новых направлений">
+<div class="eyebrow">Наука · Anthropic</div>
+<h2>ART: агенты заметили необычное<br>соседство в геномах</h2>
+<p class="lede">Общая память помогала превращать находки одних исследователей в вопросы для других.</p>
+<div class="art-graphic">
+  <div class="art-map"><span class="art-piece art-rt">Обратная<br>транскриптаза</span><span class="art-sequence" aria-hidden="true">· · · · ·</span><span class="art-piece art-repeat">Повторы<br>ДНК</span><span class="art-sequence" aria-hidden="true">· · · · ·</span><span class="art-piece art-gene">Дополнительный<br>ген</span></div>
+  <div class="art-routing"><div><b>WORKERS</b><span>исследуют геномы</span></div><i aria-hidden="true">→</i><div><b>CURATOR</b><span>сохраняет находки</span></div><i aria-hidden="true">→</i><div><b>SUPERVISOR</b><span>задаёт продолжения</span></div></div>
+  <div class="art-result"><strong>98 из 119</strong><span>задач появились по ходу кампании</span><small>Функция обнаруженной системы пока неизвестна</small></div>
+</div>
+<a class="case-qr" href="https://www.anthropic.com/news/claude-discovers-novel-enzyme-system" target="_blank" rel="noopener"><img src="assets/qr-art.svg" alt="QR: первоисточник"><span>Первоисточник</span></a>
+</section>
+
+<section class="slide revision science-case cosci-case" data-title="Наука: от предсказания к гипотезам">
+<div class="eyebrow">Наука · Google Co-Scientist</div>
+<h2>Гипотеза проходит через<br>несколько независимых ролей</h2>
+<p class="lede">Агенты предлагают идеи, ищут возражения, сравнивают варианты и улучшают лучшие гипотезы.</p>
+<div class="cosci-workflow">
+  <div class="cosci-track"><div><em>01</em><strong>Генерация</strong><span>Несколько объяснений</span><svg class="cosci-icon" viewBox="0 0 90 70" aria-hidden="true"><path d="M10 35H37M37 35L68 10M37 35L68 35M37 35L68 60"/><circle cx="72" cy="10" r="5"/><circle cx="72" cy="35" r="5"/><circle cx="72" cy="60" r="5"/></svg></div><div><em>02</em><strong>Рефлексия</strong><span>Поиск слабых мест</span><svg class="cosci-icon" viewBox="0 0 90 70" aria-hidden="true"><circle cx="40" cy="29" r="20"/><path d="M55 44L79 66M29 29H51M40 18V40"/></svg></div><div><em>03</em><strong>Рейтинг</strong><span>Сравнение гипотез</span><svg class="cosci-icon" viewBox="0 0 90 70" aria-hidden="true"><path d="M8 15H76M8 35H59M8 55H42"/><circle cx="79" cy="15" r="4"/><circle cx="62" cy="35" r="4"/><circle cx="45" cy="55" r="4"/></svg></div><div><em>04</em><strong>Эволюция</strong><span>Развитие лучших идей</span><svg class="cosci-icon" viewBox="0 0 90 70" aria-hidden="true"><path d="M10 52H38V33H62V12M38 52H76M62 33H76"/><circle cx="77" cy="52" r="4"/><circle cx="77" cy="33" r="4"/><circle cx="62" cy="10" r="4"/></svg></div></div>
+  <div class="cosci-test"><span>ЛАБОРАТОРИЯ</span><strong>Проверка отдельных кандидатов in vitro</strong><small>В статье — эксперименты по острому миелоидному лейкозу; это ещё не лечение.</small></div>
+</div>
+<a class="case-qr" href="https://www.nature.com/articles/s41586-026-10644-y" target="_blank" rel="noopener"><img src="assets/qr-coscientist.svg" alt="QR: первоисточник"><span>Первоисточник</span></a>
+</section>
+
+<section class="slide security-dev-slide" data-title="Безопасность и разработка">
+<div class="eyebrow">Безопасность и разработка</div><h2>Параллельный поиск уже меняет работу с кодом</h2><p class="lede">Агенты делят область исследования, проверяют находки коллег и пишут код. Общая среда даёт результат, но требует контроля границ.</p>
+<div class="security-dev-grid"><article class="security-dev-card"><div class="case-label">Anthropic · поиск уязвимостей</div><div class="security-dev-hero">45 <small>агентов / 15 репозиториев</small></div><h3>Общий форум и взаимное ревью</h3><p>Координируемый swarm нашёл <b>266</b> ошибок; независимые агенты — <b>21</b> при другом бюджете и границах поиска.</p><a href="https://www.anthropic.com/research/multiagent-systems" target="_blank" rel="noopener">Исследование ↗</a></article><article class="security-dev-card"><div class="case-label">OpenAI · полезный поиск и риск</div><div class="security-dev-hero security-dev-icons"><span>Агент A</span><i>→</i><strong>Доска</strong><i>←</i><span>Агент B</span></div><h3>Уязвимости и обход изоляции</h3><p>Codex Security исследует ОС и репозитории. В другом эксперименте агенты нашли неразрешённый канал связи через общий сервис.</p><a href="https://openai.com/index/patch-the-planet/" target="_blank" rel="noopener">Поиск ошибок ↗</a> <a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" target="_blank" rel="noopener">Инцидент ↗</a></article><article class="security-dev-card"><div class="case-label">Anthropic · командная разработка</div><div class="security-dev-hero">16 <small>Claude Code агентов</small></div><h3>Свой C-компилятор</h3><p>Параллельные задачи и тестовый стенд позволили собрать Linux 6.9 для трёх архитектур.</p><a href="https://www.anthropic.com/engineering/building-c-compiler" target="_blank" rel="noopener">Инженерный разбор ↗</a></article><article class="security-dev-card"><div class="case-label">Повседневные инструменты</div><div class="security-dev-hero security-dev-wordmark">Codex <span>·</span> Claude</div><h3>Делегирование специалистам</h3><p>Кодинг-агент может поручить узкую задачу подагенту и собрать артефакты обратно. Правила координации различаются.</p><a href="https://developers.openai.com/codex/multi-agent/" target="_blank" rel="noopener">Codex ↗</a> <a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">Claude Code ↗</a></article></div>
+</section>
+
+<section class="slide" data-title="Анатомия современного агента">
+<div class="eyebrow">База</div><h2>Модель выбирает действие, инструменты возвращают факты</h2>
+<p class="lede">Агент обновляет контекст после каждого действия и продолжает цикл, пока не получит проверяемый результат.</p><svg class="diagram" style="margin-top:12px;max-height:480px" viewBox="0 0 1420 520" role="img" aria-label="Агентный цикл: контекст, LLM, инструменты, наблюдение, обновление состояния">
+<rect class="node" x="35" y="45" width="325" height="390" rx="12"/><text class="big" x="70" y="101">Контекст</text><path class="ghost" d="M65 132H330"/><text x="70" y="190">Задача и ограничения</text><text x="70" y="248">Наблюдения</text><text x="70" y="306">Текущий кандидат</text><text class="label" x="70" y="390">Память рабочего цикла</text>
+<path class="edge hot" d="M360 180H505"/><rect class="node hl" x="510" y="110" width="260" height="150" rx="14"/><text class="big" x="640" y="170" text-anchor="middle">LLM</text><text class="label" x="640" y="217" text-anchor="middle">Выбирает действие</text>
+<path class="edge hot" d="M770 180H940"/><text class="label" x="810" y="150">tool call</text><rect class="node violet" x="945" y="110" width="340" height="150" rx="14"/><text class="big" x="1115" y="170" text-anchor="middle">Инструменты</text><text class="label" x="1115" y="217" text-anchor="middle">SQL · поиск · код · API</text>
+<path class="edge hot" d="M1115 260V385H365"/><text x="710" y="365" text-anchor="middle">Наблюдение меняет состояние</text>
+<path class="edge" d="M640 110V30H1285"/><text class="label" x="940" y="15" text-anchor="middle">Достаточно данных: финальный ответ</text>
+</svg>
+<p class="footnote">Цель, наблюдения и текущий кандидат остаются в состоянии. Ограничения и критерий завершения задаёт runtime.</p>
+
+</section>
+
+<section class="slide" data-title="Цикл становится графом">
+<div class="eyebrow">Управление исполнением</div><h2>Граф делает маршруты агента явными</h2><p class="lede">Когда появляются ветвления, проверки и возвраты, простой цикл удобно представить как узлы и переходы.</p>
+<div class="two" style="margin-top:16px;grid-template-columns:1.75fr 1fr">
+<svg class="diagram" viewBox="0 0 900 510" role="img" aria-label="Граф с условным выбором, инструментом, проверкой и возвратом">
+<rect class="node hl" x="80" y="40" width="260" height="85" rx="12"/><text x="210" y="92" text-anchor="middle">Модель</text><path class="edge" d="M340 82H510"/><text class="label" x="390" y="57">tool?</text><rect class="node" x="520" y="40" width="280" height="85" rx="12"/><text x="660" y="92" text-anchor="middle">Инструмент</text><path class="edge hot" d="M660 125V210H210V125"/>
+<path class="edge" d="M210 210V290"/><text class="label" x="228" y="260">кандидат готов</text><rect class="node violet" x="80" y="300" width="260" height="90" rx="12"/><text x="210" y="355" text-anchor="middle">Проверка</text><path class="edge" d="M340 345H520"/><text class="label" x="405" y="320">OK</text><rect class="node" x="525" y="300" width="275" height="90" rx="12"/><text x="662" y="355" text-anchor="middle">Результат</text><path class="edge dash" d="M80 345H30V82H80"/><text class="label" x="200" y="465">Узлы выполняют работу</text><text class="label" x="530" y="465">Рёбра выбирают маршрут</text>
+</svg>
+<div style="padding-top:25px"><h3 class="accent">StateGraph</h3><ul class="mini-list" style="font-size:23px"><li>Узлы читают и обновляют состояние</li><li>Условия выбирают следующий узел</li><li>Ветки исполняют независимую работу</li><li>Checkpoint позволяет продолжить запуск</li></ul><p class="small muted">LangGraph исполняет граф.<br>Логику задачи задаём мы.</p></div></div>
+
+</section>
+
+<section class="slide" data-title="Свой цикл и LangGraph">
+<div class="eyebrow">Инженерная цена</div><h2>От агентного цикла к надёжному исполнению</h2><p class="lede">LangChain и LangGraph берут на себя типовую инфраструктуру агента. Её самостоятельная реализация быстро становится отдельным проектом.</p>
+<div class="two" style="margin-top:28px;grid-template-columns:1.1fr 1fr">
+<div class="rule"><h3 style="margin-bottom:26px">Собственный runtime</h3><pre class="code"><span class="kw">while</span> budget.remaining:
+    reply = <span class="fn">model</span>(state.messages, tools)
+    state.add(reply)
+
+    <span class="kw">if not</span> reply.tool_calls:
+        <span class="kw">return</span> reply
+
+    <span class="kw">for</span> call <span class="kw">in</span> reply.tool_calls:
+        result = <span class="fn">execute_checked</span>(call)
+        state.add_tool_result(call.id, result)</pre><p class="caption">Ещё нужны лимиты, таймауты, обработка ошибок и журнал событий.</p></div>
+<div class="rule framework-benefits"><h3>Что уже реализовано в LangChain + LangGraph</h3>
+<div><b>Агентный цикл и инструменты</b><p>Вызвать модель → выполнить tool calls → вернуть результаты → продолжить.</p></div>
+<div><b>Управление контекстом</b><p>Отобрать сообщения и инструменты, сжать историю, подставить нужные инструкции.</p></div>
+<div><b>Обработка сбоев</b><p>Повторить неудачный вызов, переключить модель через fallback, ограничить число шагов.</p></div>
+<div><b>Сложное исполнение</b><p>Запустить ветки параллельно, сохранить состояние и продолжить после паузы.</p></div>
+</div>
+</div>
+
+</section>
+
+<section class="slide revision " data-title="LangGraph или собственная обвязка"><div class="eyebrow">Инженерный выбор</div><h2>Выбираем, какие обязанности<br>готовы взять на себя</h2><div class="rev-split"><div class="rev-note"><div class="case-label">Готовая экосистема</div><h3>LangChain + LangGraph</h3><p>Агентные циклы, middleware, состояние, checkpoints, streaming.</p><p>Экосистема ускоряет разработку. Баги и CVE зависимостей требуют обновлений и контроля версий.</p></div><div class="rev-note"><div class="case-label">Свои правила исполнения</div><h3>Собственный harness</h3><p>Нестандартный scheduler, протокол общей доски, бюджеты и распределённые workers.</p><p>Вы отвечаете за собственные баги, безопасность, повторы и состояние; зависимости всё равно остаются.</p></div></div><div class="rev-flow"><div><strong>Команда</strong><span>Контракт + evals</span></div><b aria-hidden="true">→</b><div><strong>Codex / Claude</strong><span>Реализация + тесты</span></div><b aria-hidden="true">→</b><div><strong>Runtime</strong><span>Очередь + workers + state</span></div></div></section>
+
+<section class="slide" data-title="Что меняет несколько агентов">
+<div class="eyebrow">Декомпозиция</div><h2>Мы распределяем исследование, а не просто добавляем роли</h2><p class="lede">Отдельный агент полезен, когда получает самостоятельный вопрос, подходящий контекст и понятный критерий завершения.</p>
+<svg class="diagram" style="margin-top:8px;max-height:370px" viewBox="0 0 1420 430" role="img" aria-label="Задача делится на план, статистику и переписывание, затем объединяется проверкой">
+<rect class="node" x="20" y="155" width="200" height="110" rx="12"/><text x="120" y="218" text-anchor="middle">Задача</text><path class="edge" d="M220 210H310V65H390"/><path class="edge" d="M310 210H390"/><path class="edge" d="M310 210V355H390"/>
+<rect class="node hl" x="400" y="20" width="310" height="90" rx="12"/><text x="555" y="74" text-anchor="middle">Анализ плана</text><rect class="node violet" x="400" y="165" width="310" height="90" rx="12"/><text x="555" y="220" text-anchor="middle">Статистика</text><rect class="node" x="400" y="310" width="310" height="90" rx="12"/><text x="555" y="365" text-anchor="middle">Гипотезы SQL</text>
+<path class="edge" d="M710 65H820V210H960"/><path class="edge" d="M710 210H960"/><path class="edge" d="M710 355H820V210H960H960"/>
+<rect class="node hl" x="970" y="155" width="400" height="110" rx="12"/><text x="1170" y="200" text-anchor="middle">Объединить факты</text><text class="label" x="1170" y="239" text-anchor="middle">и проверить общий результат</text>
+</svg>
+<div class="three rule" style="grid-template-columns:repeat(4,1fr);gap:30px"><div><h3>Декомпозиция</h3><p class="caption">Разделить задачу на проверяемые части</p></div><div><h3>Специализация</h3><p class="caption">Дать каждой роли нужные факты</p></div><div><h3>Параллелизм</h3><p class="caption">Одновременно исследовать независимые вопросы</p></div><div><h3>Обмен контекстом</h3><p class="caption">Передавать выводы, сохраняя ограничения</p></div></div>
+
+</section>
+
+<section class="slide" data-title="Четыре схемы управления">
+<div class="eyebrow">Паттерны</div><h2>Четыре способа организовать работу агентов</h2>
+<div class="patterns-grid">
+<div class="rule"><h3>Single</h3><svg class="diagram" viewBox="0 0 440 340" role="img" aria-label="Single agent вызывает инструменты"><rect class="node hl" x="100" y="35" width="240" height="85" rx="12"/><text x="220" y="88" text-anchor="middle">Один агент</text><path class="edge" d="M180 120V220"/><path class="edge" d="M260 220V120"/><rect class="node" x="70" y="225" width="300" height="85" rx="12"/><text x="220" y="278" text-anchor="middle">Инструменты</text></svg><p class="body">Один агент сам исследует задачу<br>и хранит контекст поиска.</p><p class="pattern-api"><span>LangChain</span><code>create_agent()</code></p></div>
+<div class="rule"><h3>Orchestrator</h3><svg class="diagram" viewBox="0 0 440 340" role="img" aria-label="Orchestrator вызывает агентов Plan, Rewrite и Audit, каждый со своим контекстом и инструментами"><rect class="node violet" x="85" y="35" width="270" height="85" rx="12"/><text x="220" y="88" text-anchor="middle">Orchestrator</text><path class="edge" d="M140 120V174H72V209"/><path class="edge" d="M218 120V209"/><path class="edge" d="M300 120V174H362V209"/><rect class="node" x="10" y="215" width="125" height="105" rx="9"/><text x="72" y="248" text-anchor="middle">Plan</text><text x="72" y="278" text-anchor="middle" style="font-size:18px">agent + tools</text><text x="72" y="301" text-anchor="middle" style="font-size:17px">свой контекст</text><rect class="node hl" x="155" y="215" width="125" height="105" rx="9"/><text x="218" y="248" text-anchor="middle">Rewrite</text><text x="218" y="278" text-anchor="middle" style="font-size:18px">agent + tools</text><text x="218" y="301" text-anchor="middle" style="font-size:17px">свой контекст</text><rect class="node" x="300" y="215" width="125" height="105" rx="9"/><text x="362" y="248" text-anchor="middle">Audit</text><text x="362" y="278" text-anchor="middle" style="font-size:18px">agent + tools</text><text x="362" y="301" text-anchor="middle" style="font-size:17px">свой контекст</text></svg><p class="body">Руководитель вызывает агентов:<br>у каждого свой цикл и DB tools.</p><p class="pattern-api"><span>LangChain</span><code>@tool → subagent.invoke()</code></p></div>
+<div class="rule"><h3>Handoff / Swarm</h3><svg class="diagram" viewBox="0 0 440 340" role="img" aria-label="Handoff Plan к Rewrite, затем Audit; отдельная линия возврата"><rect class="node hl" x="25" y="35" width="180" height="70" rx="4"/><text x="115" y="78" text-anchor="middle">Plan</text><path class="edge hot" d="M115 105V155"/><rect class="node violet" x="25" y="160" width="180" height="70" rx="4"/><text x="115" y="203" text-anchor="middle">Rewrite</text><path class="edge hot" d="M205 195H265"/><rect class="node" x="270" y="160" width="155" height="70" rx="4"/><text x="347" y="203" text-anchor="middle">Audit</text><path class="edge dash" d="M348 230V290H115V230"/><text class="label" x="230" y="320" text-anchor="middle">Возврат с ошибкой проверки</text></svg><p class="body">Текущий специалист передаёт<br>задачу и контекст следующему.</p><p class="pattern-api"><span>LangGraph Swarm</span><code>create_swarm()</code></p></div>
+<div class="rule"><h3>Parallel / Blackboard</h3><svg class="diagram" viewBox="0 0 440 340" role="img" aria-label="Три параллельных агента читают и пополняют общую доску"><rect class="node hl" x="10" y="35" width="125" height="70"/><text x="72" y="79" text-anchor="middle">Plan</text><rect class="node violet" x="158" y="35" width="125" height="70"/><text x="220" y="79" text-anchor="middle">Stats</text><rect class="node" x="305" y="35" width="125" height="70"/><text x="368" y="79" text-anchor="middle">Rewrite</text><path class="edge hot" d="M52 105V222"/><path class="edge hot" d="M200 105V222"/><path class="edge hot" d="M348 105V222"/><path class="edge" d="M92 225V108"/><path class="edge" d="M240 225V108"/><path class="edge" d="M388 225V108"/><rect class="node hl" x="10" y="230" width="420" height="80"/><text x="220" y="280" text-anchor="middle">Общая доска + артефакты</text></svg><p class="body">Агенты исследуют гипотезы одновременно и используют общие находки.</p><p class="pattern-api"><span>LangGraph</span><code>StateGraph + Send</code><code>Доска: свой store + tools</code></p></div></div><div class="pattern-principles"><span><b>Возврат результата</b> · agents-as-tools</span><span><b>Передача хода</b> · handoff</span><span><b>Общие находки</b> · доска, сообщения, события</span></div>
+
+</section>
+
+<section class="slide" data-title="Контекст и передача управления">
+<div class="eyebrow">Интерактивная схема</div><h2>Переход между агентами — это контракт на передачу контекста</h2>
+<div class="two" style="grid-template-columns:1.4fr 1fr;gap:55px;margin-top:10px">
+<div><div class="switch"><button class="inline-btn selected" data-route="orch">Orchestrator</button><button class="inline-btn" data-route="swarm">Swarm</button><button class="inline-btn" id="route-step">Следующий шаг →</button></div>
+<svg class="diagram" viewBox="0 0 810 380" role="img" aria-label="Пошаговая подсветка управления в orchestrator и swarm"><g id="orch-edges"><path class="edge" d="M405 95V150H115V228"/><path class="edge" d="M405 150H310V228"/><path class="edge" d="M405 150H510V228"/><path class="edge" d="M405 150H710V228"/></g><g id="swarm-edges"><path class="edge hot" d="M115 300V340H510V300"/><path class="edge hot" d="M595 265H625"/></g>
+<g class="route-node" id="route-o"><rect class="node violet" x="270" y="15" width="270" height="80" rx="12"/><text x="405" y="65" text-anchor="middle">Orchestrator</text></g>
+<g class="route-node" id="route-p"><rect class="node" x="25" y="230" width="170" height="70" rx="12"/><text x="110" y="273" text-anchor="middle">Plan</text></g><g class="route-node" id="route-s"><rect class="node" x="225" y="230" width="170" height="70" rx="12"/><text x="310" y="273" text-anchor="middle">Stats</text></g><g class="route-node" id="route-q"><rect class="node" x="425" y="230" width="170" height="70" rx="12"/><text x="510" y="273" text-anchor="middle">Rewrite</text></g><g class="route-node" id="route-a"><rect class="node" x="625" y="230" width="170" height="70" rx="12"/><text x="710" y="273" text-anchor="middle">Audit</text></g></svg>
+<p class="route-label" id="route-state"></p><p class="caption" id="route-path"></p></div>
+<div style="padding-top:37px"><h3 style="margin-bottom:28px">Компактный пакет</h3><div class="packet"><code>task</code><span>Исходная цель</span><code>hypothesis</code><span>Что проверить</span><code>evidence</code><span>Что уже установлено</span><code>candidate_sql</code><span>SQL, который проверяем</span></div><p class="caption" style="margin-top:35px">Передаём достаточно фактов для продолжения.<br>Полную историю сохраняем в отдельной трассе.</p></div>
+</div>
+
+</section>
+
+<section class="slide" data-title="Когда окупается координация">
+<div class="eyebrow">Компромисс</div><h2>Выигрыш должен покрыть координацию</h2>
+<div class="two" style="margin-top:30px;grid-template-columns:1.55fr 1fr;gap:75px"><div>
+<div class="cost-row"><span>Single</span><div class="cost-bar"><div class="cost-work" style="width:62.5%"></div></div><strong>100</strong></div><div class="cost-row"><span>4 workers</span><div class="cost-bar"><div class="cost-work" id="cost-work"></div><div class="cost-coord" id="cost-coord"></div></div><strong id="cost-total"></strong></div>
+<div class="legend"><span><i></i>Полезная работа</span><span><i class="vio"></i>Координация</span></div>
+<label class="slider-row">Независимая часть<input class="cost-input" id="parallel" type="range" min="0" max="100" value="60"><span id="parallel-value"></span></label><label class="slider-row">Накладные расходы<input class="cost-input" id="coord" type="range" min="0" max="60" value="20"><span id="coord-value"></span></label>
+<p class="body accent" id="cost-verdict" style="margin-top:26px"></p>
+</div><div class="rule" style="margin-top:35px"><h3>Когда появляется выигрыш</h3><p class="body" style="margin-top:20px;font-size:23px">Подзадачи можно решать независимо.<br>Специалисту нужен свой контекст.<br>Результат можно проверить кодом.</p><h3 style="margin-top:42px;color:var(--purple)">Расходы растут</h3><p class="body" style="margin-top:20px;font-size:23px">Вызовы и обмен контекстом стоят токенов.<br>Последовательные передачи добавляют latency.<br>Ошибка может перейти к следующей роли.</p></div></div>
+<div class="cost-formula"><b>T₄ = T₁ × ((1 − p) + p / 4) + C</b><span>p — независимая часть · C — время координации · условная модель</span></div>
+</section>
+
+<section class="slide sql-task" data-title="Исходный SQL для оптимизации"><div class="eyebrow">Практика</div><h2>Один отчёт по клиентам — много повторной работы</h2>
+<div class="sql-task-layout"><div class="sql-source"><div class="sql-source-head"><span>Исходный запрос · фрагмент</span><button class="inline-btn" id="show-sql">Все 86 строк ↗</button></div><pre>SELECT
+    c.id AS customer_id,
+    c.region,
+    c.segment,
+    (
+        SELECT count(*)
+        FROM orders AS o
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND EXISTS (
+              SELECT 1
+              FROM payments AS pay
+              WHERE pay.order_id = o.id
+                AND pay.status = &#x27;captured&#x27;
+          )
+    ) AS captured_order_count,
+    COALESCE((
+        SELECT sum((oi.quantity - COALESCE(r.quantity, 0)) * oi.unit_price)
+        FROM orders AS o
+        JOIN order_items AS oi ON oi.order_id = o.id
+        LEFT JOIN returns AS r
+          ON r.order_id = oi.order_id AND r.line_no = oi.line_no
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND EXISTS (
+              SELECT 1 FROM payments AS pay
+              WHERE pay.order_id = o.id AND pay.status = &#x27;captured&#x27;
+<span class="sql-ellipsis">… ещё 57 строк: скидки, доставки, поставщики, фильтрация</span></pre></div>
+<div class="sql-explainer"><div class="sql-stats"><div><b>86</b><span>строк SQL</span></div><div><b>11</b><span>таблиц</span></div><div><b>6</b><span>расчётных показателей</span></div></div>
+<h3>Что делает запрос</h3><p>Считает заказы, выручку с возвратами, скидки, просрочки и риск поставщиков для каждого клиента.</p>
+<div class="rule"><h3>Где искать ускорение</h3><p>Повторные подзапросы, одни и те же фильтры, JOIN и вложенные EXISTS.</p></div>
+<div class="keyline"><h3>Задача агента</h3><p>Сохранить результат отчёта и сократить измеренное время выполнения.</p></div></div></div></section>
+
+<section class="slide revision " data-title="Как проверяли SQL"><div class="eyebrow">Практика · доверие к результату</div><h2>Сначала корректность.<br>Затем парные замеры.</h2><div class="rev-cards"><article><span>01</span><h3>Одинаковый результат</h3><p>Типы столбцов и EXCEPT ALL в обе стороны, в одном снимке БД.</p></article><article><span>02</span><h3>Одинаковый прогрев</h3><p>Прогреть оба SQL → измерить AB / BA. Порядок блоков перемешан.</p></article><article><span>03</span><h3>Повторить без ИИ</h3><p>27 готовых SQL × 10 пар. Один сервер, без параллельных измерений.</p></article></div><div class="rev-banner"><math class="sql-equation" display="block" aria-label="Ускорение одного SQL равно медиане отношения времени исходного запроса к времени кандидата по десяти парным замерам"><msub><mi>S</mi><mi>SQL</mi></msub><mo>=</mo><munder><mi mathvariant="normal">median</mi><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>…</mo><mn>10</mn></mrow></munder><mrow><mo>(</mo><mfrac><msub><mi>t</mi><mrow><mi>baseline</mi><mo>,</mo><mi>i</mi></mrow></msub><msub><mi>t</mi><mrow><mi>candidate</mi><mo>,</mo><mi>i</mi></mrow></msub></mfrac><mo>)</mo></mrow></math><br><small>Ячейка таблицы = медиана результатов трёх независимо найденных SQL.</small></div><p class="rev-limit">Этот эксперимент: SELECT, фиксированные данные, прогретый кэш.</p></section>
+
+<section class="slide demo-slide" data-title="Агенты оптимизируют SQL">
+<div class="eyebrow">Агенты в действии</div><h2>Как агенты исследуют и улучшают SQL</h2><p class="lede">Отправьте свой SQL и задачу в чат. Агенты исследуют запрос, предложат изменения и проверят результат.</p>
+<div class="demo-tabs"><button class="selected" data-demo="replay">Разбор записи</button><button data-demo="live">Живой LLM</button></div>
+<div class="demo-unavailable" id="demo-unavailable" hidden><h3>Живое демо не запущено</h3><p>Запустите презентацию и чат одной командой:</p><code>.\.venv\Scripts\python.exe -m presentation.serve</code><button class="inline-btn" id="retry-live">Подключиться снова</button></div><iframe class="demo-frame" id="demo-frame" title="Визуализация пайплайнов агентов" src="demo.html?embed=1&v=math-15" loading="lazy"></iframe>
+<div class="demo-context" id="demo-context">Записи реальных запусков: Single, Orchestrator, Handoff и Board Swarm.</div>
+</section>
+
+<section class="slide light" data-title="Результаты: матрица 3 × 3">
+<div class="eyebrow">Серверный эксперимент · 270 успешных пар</div><h2>Почти 2× быстрее — с разной стоимостью поиска</h2>
+<table class="matrix" aria-label="Медианное ускорение SQL и токены, потраченные на поиск"><thead><tr><th>Модель</th><th>Single</th><th>Orchestrator</th><th>Swarm</th></tr></thead><tbody>
+<tr><td>DeepSeek<span class="small muted" style="display:block;font-weight:400">V4-Flash-0731</span></td><td class="best">1,90×<span class="matrix-tokens">3,962 млн токенов</span><span class="matrix-money">$0,115</span><i class="meter" style="width:45%"></i></td><td>1,88×<span class="matrix-tokens">2,046 млн токенов</span><span class="matrix-money">$0,071</span><i class="meter" style="width:44%"></i></td><td>1,74×<span class="matrix-tokens">0,570 млн токенов</span><span class="matrix-money">$0,022</span><i class="meter" style="width:37%"></i></td></tr>
+<tr><td>Luna<span class="small muted" style="display:block;font-weight:400">GPT-5.6</span></td><td>1,91×<span class="matrix-tokens">0,717 млн токенов</span><span class="matrix-money">$0,193</span><i class="meter" style="width:45.5%"></i></td><td class="best">2,03×<span class="matrix-tokens">0,389 млн токенов</span><span class="matrix-money">$0,125</span><i class="meter" style="width:51.5%"></i></td><td>2,02×<span class="matrix-tokens">0,243 млн токенов</span><span class="matrix-money">$0,079</span><i class="meter" style="width:51%"></i></td></tr>
+<tr><td>Sol<span class="small muted" style="display:block;font-weight:400">GPT-5.6</span></td><td>2,00×<span class="matrix-tokens">0,657 млн токенов</span><span class="matrix-money">$1,722</span><i class="meter" style="width:50%"></i></td><td class="best">2,04×<span class="matrix-tokens">0,490 млн токенов</span><span class="matrix-money">$1,465</span><i class="meter" style="width:52%"></i></td><td>1,92×<span class="matrix-tokens">0,321 млн токенов</span><span class="matrix-money">$0,950</span><i class="meter" style="width:46%"></i></td></tr>
+</tbody></table>
+
+
+</section>
+
+<section class="slide" data-title="Что именно ускорило запрос">
+<div class="eyebrow">Механизм ускорения</div><h2>Выигрыш дала более удачная организация SQL</h2>
+<div class="two" style="margin-top:35px;gap:80px"><div class="rule"><h3 class="muted">Baseline: повторение на каждом клиенте</h3><svg class="diagram" viewBox="0 0 650 280" role="img" aria-label="До: каждый клиент повторяет подзапросы"><rect class="node" x="10" y="90" width="180" height="85" rx="9"/><text x="100" y="142" text-anchor="middle">Клиент</text><path class="edge" d="M190 130H270V45H350"/><path class="edge" d="M270 130H350"/><path class="edge" d="M270 130V225H350"/><rect class="node" x="360" y="10" width="270" height="70" rx="9"/><text x="495" y="53" text-anchor="middle">Фильтр + агрегат</text><rect class="node" x="360" y="100" width="270" height="70" rx="9"/><text x="495" y="143" text-anchor="middle">Фильтр + агрегат</text><rect class="node" x="360" y="190" width="270" height="70" rx="9"/><text x="495" y="233" text-anchor="middle">Ещё 4 показателя</text></svg></div>
+<div class="rule"><h3 class="accent">Кандидаты: общие наборы и агрегаты</h3><svg class="diagram" viewBox="0 0 650 280" role="img" aria-label="После: общий набор, группировка и соединение"><rect class="node hl" x="5" y="90" width="190" height="85" rx="9"/><text x="100" y="126" text-anchor="middle">Нужные</text><text x="100" y="155" text-anchor="middle">заказы</text><path class="edge hot" d="M195 133H225"/><rect class="node violet" x="230" y="60" width="210" height="145" rx="9"/><text x="335" y="112" text-anchor="middle">Агрегаты</text><text class="label" x="335" y="157" text-anchor="middle">по customer_id</text><path class="edge hot" d="M440 133H475"/><rect class="node hl" x="480" y="90" width="160" height="85" rx="9"/><text x="560" y="142" text-anchor="middle">JOIN</text></svg></div></div>
+<div class="result-callout"><p><strong>Общий результат всех трёх подходов:</strong> отфильтровать заказы один раз, отдельно агрегировать показатели и соединить готовые итоги. Это убирает повторную работу и не размножает суммы.</p></div>
+
+</section>
+
+<section class="slide revision " data-title="Когда команда не помогает"><div class="eyebrow">Фейлы и ограничения</div><h2>Больше агентов не гарантирует<br>больше полезного поиска</h2><div class="rev-cards"><article><span>01</span><h3>Повторяют друг друга</h3><p>При создании C-компилятора агенты сначала исправляли одну и ту же ошибку. Помогло разделение проверок.</p></article><article><span>02</span><h3>Не могут распараллелить</h3><p>В исследовании Google 180 конфигураций: выигрыш зависит от задачи; последовательные задачи ухудшались.</p></article><article><span>03</span><h3>Не повторяют находку</h3><p>ART: десять повторных кампаний не воспроизвели находку. Удачный запуск ещё не означает надёжный процесс.</p></article></div><div class="rev-banner">Проверяйте: разнообразие гипотез → корректность → результат на единицу бюджета.</div></section>
+
+<section class="slide closing" data-title="Когда масштабирование работает">
+<div class="eyebrow">Ответ на главный вопрос</div><h2>Где мультиагентность добавляет ценность</h2>
+<p class="lede">Выигрыш возникает, когда гипотезы можно исследовать отдельно, а находки — проверить и собрать вместе.</p>
+<div class="closing-layout">
+  <div class="closing-benefits">
+    <div class="closing-benefit"><span>01 / ПОИСК</span><h3>Больше гипотез</h3><p>Независимые ветки одновременно проверяют разные направления.</p></div>
+    <div class="closing-benefit"><span>02 / КООПЕРАЦИЯ</span><h3>Общие находки</h3><p>Артефакты позволяют проверить чужую идею и развить её дальше.</p></div>
+    <div class="closing-benefit"><span>03 / КОНТЕКСТ</span><h3>Меньше шума</h3><p>Каждый специалист получает свою задачу и нужные факты.</p></div>
+    <div class="closing-benefit"><span>04 / РЕСУРСЫ</span><h3>Время и цена</h3><p>Параллельность сокращает ожидание; ранний отсев иногда снижает расход.</p></div>
+  </div>
+  <div class="closing-evidence"><div class="closing-evidence-label">Наш SQL-эксперимент</div><strong>≈ 2×</strong><p>ускорение запроса нашли все три архитектуры</p><div class="closing-divider"></div><p>Универсального победителя нет. В этой серии Swarm использовал меньше токенов.</p></div>
+</div>
+<div class="closing-principle"><b>Критерий:</b> сравнивать качество решения, время, токены и ошибки при одинаковом бюджете.</div>
+
+</section>
+
+<section class="slide revision thanks-slide" data-title="Спасибо за внимание"><div class="eyebrow">Вопросы и обсуждение</div><div class="thanks-layout"><div><h2>Спасибо<br>за внимание</h2><p class="thanks-name">Савелий Батурин<br><span>Postgres Pro · ML/AI</span></p></div><div class="thanks-materials"><a href="https://github.com/Safreliy/multiagent-workshop" target="_blank" rel="noopener"><img class="repo-qr" src="assets/qr-repository.svg" alt="QR репозитория multiagent-workshop"></a><strong>Материалы доклада</strong><span>github.com/Safreliy/multiagent-workshop</span></div></div></section>
+</main>
+
+<div class="overlay" id="overview" role="dialog" aria-modal="true" aria-label="Обзор слайдов"><button class="close">Закрыть Esc</button><h2>Слайды</h2><div class="overview-grid"></div></div>
+
+<div class="overlay" id="sources" role="dialog" aria-modal="true" aria-label="Источники"><button class="close">Закрыть Esc</button><h2>Источники и материалы</h2><ul class="source-list"><li><a href="https://openai.com/index/navier-stokes-solution/" target="_blank" rel="noopener">OpenAI: Navier–Stokes solution</a> · <a href="https://www.claymath.org/news/navier-stokes-announcement/" target="_blank" rel="noopener">Clay Mathematics Institute</a><small>Сентябрь 2026 · объявленное решение и процедура оценки</small></li><li><a href="https://openai.com/index/advisory-group-on-mathematics-and-ai/" target="_blank" rel="noopener">OpenAI: более 100 открытых задач</a><small>21 сентября 2026 · сообщение авторов</small></li><li><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" target="_blank" rel="noopener">Hugging Face incident</a> · <a href="https://openai.com/index/patch-the-planet/" target="_blank" rel="noopener">Patch the Planet</a><small>Изоляция, коллективная коммуникация, поиск уязвимостей</small></li><li><a href="metrics.json" target="_blank">Токены и стоимость исходной генерации</a><small>Те же 27 SQL · SHA256 источников проверены</small></li>
+<li><a href="https://arxiv.org/abs/2605.22763" target="_blank" rel="noopener">Advancing Mathematics Research with AI-Driven Formal Proof Search</a><small>Google DeepMind, 2026 · 9/353 открытых задач Эрдёша</small></li>
+<li><a href="https://www.claymath.org/millennium-problems/" target="_blank" rel="noopener">Clay Mathematics Institute: Millennium Problems</a><small>Задачи тысячелетия и их статус</small></li>
+<li><a href="https://www.anthropic.com/research/smart-contracts" target="_blank" rel="noopener">AI agents find smart contract exploits</a><small>Anthropic, 2025 · SCONE-bench, симуляция</small></li>
+<li><a href="https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/" target="_blank" rel="noopener">Accelerating scientific breakthroughs with an AI co-scientist</a><small>Google Research, 2025 · multi-agent и внешняя валидация</small></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank" rel="noopener">LangGraph overview</a> · <a href="https://docs.langchain.com/oss/python/langchain/multi-agent/index" target="_blank" rel="noopener">Multi-agent patterns</a><small>Официальная документация архитектур и runtime</small></li>
+<li><a href="https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/" target="_blank" rel="noopener">Towards a science of scaling agent systems</a><small>Google Research, 2026 · зависимость координации от задачи</small></li>
+<li><a href="https://github.com/langchain-ai/agent-chat-ui" target="_blank" rel="noopener">Agent Chat UI</a> · <a href="https://docs.langchain.com/langsmith/studio" target="_blank" rel="noopener">Studio</a> · <a href="https://langfuse.com/docs/observability/overview" target="_blank" rel="noopener">Langfuse</a><small>Готовые интерфейсы для чата, графа и трасс</small></li>
+<li><a href="materials/experiment.md" target="_blank">Описание нашего эксперимента</a> · <a href="materials/report.md" target="_blank">Серверные результаты</a><small>22 сентября 2026 · все 27 SQL и последние 270 пар</small></li></ul></div>
+<div class="overlay" id="sql-view" role="dialog" aria-modal="true" aria-label="Исходный SQL"><button class="close">Закрыть Esc</button><h2>Исходный SQL · 86 строк</h2><pre class="full-sql">SELECT
+    c.id AS customer_id,
+    c.region,
+    c.segment,
+    (
+        SELECT count(*)
+        FROM orders AS o
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND EXISTS (
+              SELECT 1
+              FROM payments AS pay
+              WHERE pay.order_id = o.id
+                AND pay.status = &#x27;captured&#x27;
+          )
+    ) AS captured_order_count,
+    COALESCE((
+        SELECT sum((oi.quantity - COALESCE(r.quantity, 0)) * oi.unit_price)
+        FROM orders AS o
+        JOIN order_items AS oi ON oi.order_id = o.id
+        LEFT JOIN returns AS r
+          ON r.order_id = oi.order_id AND r.line_no = oi.line_no
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND EXISTS (
+              SELECT 1 FROM payments AS pay
+              WHERE pay.order_id = o.id AND pay.status = &#x27;captured&#x27;
+          )
+    ), 0)::numeric(20, 2) AS net_item_revenue,
+    COALESCE((
+        SELECT sum(op.discount_amount)
+        FROM orders AS o
+        JOIN order_promotions AS op ON op.order_id = o.id
+        JOIN promotions AS pr ON pr.id = op.promotion_id
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND pr.active
+    ), 0)::numeric(18, 2) AS active_promotion_discount,
+    (
+        SELECT count(*)
+        FROM orders AS o
+        JOIN shipments AS sh ON sh.order_id = o.id
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND (sh.delivered_at IS NULL OR sh.delivered_at &gt; sh.shipped_at + INTERVAL &#x27;10 days&#x27;)
+    ) AS late_shipment_count,
+    (
+        SELECT count(DISTINCT ps.supplier_id)
+        FROM orders AS o
+        JOIN order_items AS oi ON oi.order_id = o.id
+        JOIN product_suppliers AS ps ON ps.product_id = oi.product_id
+        JOIN suppliers AS s ON s.id = ps.supplier_id
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+          AND s.risk_tier &gt;= 4
+    ) AS risky_supplier_count,
+    (
+        SELECT max(o.created_at)
+        FROM orders AS o
+        WHERE o.customer_id = c.id
+          AND lower(o.status) = &#x27;completed&#x27;
+          AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+    ) AS last_completed_at
+FROM customers AS c
+WHERE c.active
+  AND EXISTS (
+      SELECT 1
+      FROM orders AS o
+      JOIN order_items AS oi ON oi.order_id = o.id
+      JOIN products AS p ON p.id = oi.product_id
+      JOIN product_suppliers AS ps ON ps.product_id = p.id
+      JOIN suppliers AS s ON s.id = ps.supplier_id
+      JOIN shipments AS sh ON sh.order_id = o.id
+      WHERE o.customer_id = c.id
+        AND lower(o.status) = &#x27;completed&#x27;
+        AND o.created_at::date &gt;= DATE &#x27;2024-01-01&#x27;
+        AND p.active
+        AND s.risk_tier &gt;= 4
+        AND (sh.delivered_at IS NULL OR sh.delivered_at &gt; sh.shipped_at + INTERVAL &#x27;10 days&#x27;)
+  );
+
+</pre></div>
+<script src="deck.js?v=math-15"></script></body></html>

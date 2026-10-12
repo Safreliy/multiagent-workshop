@@ -1,0 +1,20 @@
+id: retail-customer-fulfillment-v2
+description: >-
+  Optimize the supplied PostgreSQL query, preserving its exact unordered multiset
+  result, column order, and types. Maximize measured speedup. Do not modify data.
+  Use only the explicitly available tools for physical changes allowed by this run's
+  profile. Inspect get_capabilities. Investigate plans, joins, repeated correlated
+  aggregation, indexes and selectivity. Preserve NULLs and multiplicity across
+  one-to-many joins: fixture equivalence alone is not a general proof.
+  Submit the final SQL with submit_candidate. Retain physical changes needed by
+  that SQL; the final result is measured in the final database state.
+baseline_file: ../db/hard-baseline.sql
+benchmark_samples: 5
+warmup: 1
+statement_timeout_ms: 60000
+max_llm_calls: 36
+max_tool_calls: 64
+temperature: 0
+request_timeout_s: 180
+max_output_tokens: 8192
+max_model_retries: 1

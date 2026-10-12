@@ -1,0 +1,27 @@
+name: sql-agent-scaling
+
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_DB: sql_agent_lab
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: --auth-host=trust --auth-local=trust
+    ports:
+      - "127.0.0.1:${SQL_AGENT_POSTGRES_PORT:-55432}:5432"
+    healthcheck:
+      # The temporary init server only listens on a Unix socket. Requiring TCP
+      # keeps `docker compose up --wait` blocked until seeding is truly done.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d sql_agent_lab"]
+      interval: 2s
+      timeout: 3s
+      retries: 90
+      start_period: 180s
+    volumes:
+      - sql_agent_pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./seed.sql:/docker-entrypoint-initdb.d/20-seed.sql:ro
+
+volumes:
+  sql_agent_pgdata:

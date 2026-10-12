@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL agents · replay</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1020; --panel:#121a2d; --panel2:#18233a; --line:#293751; --ink:#f2f7ff; --muted:#a5b7d0; --cyan:#67e8f9; --violet:#b8a1ff; --green:#78e3bd; --amber:#ffd58d; --red:#ff9da6; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:radial-gradient(circle at 70% -10%,#22325a 0,transparent 36%),radial-gradient(circle at -10% 100%,#182c45 0,transparent 34%),var(--bg); }
+    button, input { font:inherit; }
+    button { color:inherit; cursor:pointer; }
+    .shell { width:min(1820px,100%); height:100vh; min-height:720px; margin:auto; padding:20px 30px 16px; display:flex; flex-direction:column; gap:14px; }
+    header { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; }
+    .eyebrow { font-size:13px; letter-spacing:.15em; text-transform:uppercase; color:var(--cyan); font-weight:800; }
+    h1 { margin:6px 0 0; font-size:clamp(27px,2.5vw,42px); line-height:1.08; letter-spacing:-.045em; }
+    .recorded { display:flex; align-items:center; gap:9px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:10px 15px; font-size:14px; font-weight:700; white-space:nowrap; background:#10192ab8; }
+    .recorded::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--amber); box-shadow:0 0 16px var(--amber); }
+    .head-actions { display:flex; align-items:center; gap:10px; }
+    .back { color:var(--cyan); text-decoration:none; border:1px solid #3b6279; border-radius:999px; padding:10px 14px; font-size:14px; font-weight:750; white-space:nowrap; }
+    .back:hover,.back:focus-visible { background:#19354c; }
+    .tabs { display:flex; gap:9px; }
+    .tab { padding:13px 22px; border-radius:13px; border:1px solid var(--line); background:#141e31; color:var(--muted); font-weight:750; font-size:17px; transition:.2s; }
+    .tab:hover,.tab:focus-visible { border-color:var(--cyan); color:var(--ink); }
+    .tab.selected { color:#071521; border-color:var(--cyan); background:linear-gradient(120deg,var(--cyan),#a9d9ff); box-shadow:0 8px 28px #67e8f92b; }
+    .main { display:grid; grid-template-columns:minmax(0,1.22fr) minmax(430px,.78fr); gap:17px; flex:1; min-height:0; overflow:hidden; }
+    .panel { min-width:0; border:1px solid var(--line); border-radius:22px; background:linear-gradient(160deg,#152038ed,#10192cea); box-shadow:0 18px 60px #0408144d; overflow:hidden; }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 22px 8px; }
+    .panel-head h2 { margin:0; font-size:21px; letter-spacing:-.025em; }
+    .micro { color:var(--muted); font-size:13px; font-weight:650; }
+    .graph-panel { display:flex; flex-direction:column; }
+    .graph-wrap { display:flex; flex-direction:column; gap:8px; flex:1; min-height:0; padding:0 12px; }
+    svg { display:block; width:100%; height:100%; min-height:260px; flex:1; overflow:visible; }
+    .edge { stroke:#3d5273; stroke-width:2.5; fill:none; transition:stroke .25s,stroke-width .25s,opacity .25s; opacity:.7; }
+    .edge.primary { stroke:var(--cyan); stroke-width:4; opacity:1; filter:drop-shadow(0 0 7px #67e8f9a6); }
+    .edge.ghost { stroke-dasharray:7 8; opacity:.36; }
+    .node rect { fill:#182742; stroke:#445a7b; stroke-width:1.6; rx:16; transition:.25s; }
+    .node text { font-size:16px; fill:var(--ink); font-weight:750; text-anchor:middle; dominant-baseline:middle; pointer-events:none; }
+    .node .sub { font-size:11px; fill:var(--muted); font-weight:650; letter-spacing:.05em; }
+    .node.active rect { fill:#1b4054; stroke:var(--cyan); stroke-width:3; filter:drop-shadow(0 0 15px #67e8f969); }
+    .node.completed rect { stroke:var(--green); }
+    .node.muted { opacity:.44; }
+    .flow-note { flex:none; margin:0 12px; padding:10px 14px; border:1px solid #3b506d; border-radius:12px; background:#111c31e8; color:var(--muted); font-size:14px; line-height:1.35; }
+    .flow-note strong { color:var(--ink); }
+    .bottom-graph { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 16px 12px; }
+    .stat { border:1px solid var(--line); border-radius:15px; padding:10px 12px; background:#101a2d; }
+    .stat b { display:block; font-size:26px; line-height:1.1; letter-spacing:-.04em; color:var(--cyan); }
+    .stat small { display:block; color:var(--muted); font-size:12px; margin-top:5px; }
+    .right { display:flex; flex-direction:column; gap:16px; min-height:0; }
+    .event-panel { display:flex; flex-direction:column; flex:1; min-height:0; }
+    .event-now { flex:none; margin:0 22px 10px; border-radius:17px; border:1px solid #446680; background:linear-gradient(130deg,#1a3a50,#1c2445); padding:14px 16px; min-height:0; }
+    .event-line { display:flex; align-items:center; justify-content:space-between; gap:15px; color:var(--cyan); font-size:13px; font-weight:850; text-transform:uppercase; letter-spacing:.08em; }
+    .event-now h3 { margin:8px 0 5px; font-size:19px; line-height:1.2; }
+    .event-now p { margin:0; color:#c6d6e9; font-size:15px; line-height:1.43; }
+    .feed { margin:0 22px 20px; padding:0; list-style:none; display:flex; flex-direction:column; gap:9px; overflow-y:auto; flex:1; min-height:140px; scrollbar-color:#445a7b transparent; }
+    .feed li { flex:0 0 auto; display:grid; grid-template-columns:54px 1fr; gap:10px; border:1px solid var(--line); border-radius:12px; padding:10px 11px; background:#10192b; cursor:pointer; }
+    .feed li:hover,.feed li.current { border-color:#5d91a9; background:#192b40; }
+    .feed .time { color:var(--cyan); font-size:12px; font-variant-numeric:tabular-nums; font-weight:750; }
+    .feed .text { color:#dce7f5; font-size:13px; line-height:1.3; }
+    .feed .who { display:block; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px; }
+    .tools { padding:0 22px 20px; }
+    .tools-title { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; margin:0 0 9px; }
+    .chips { display:flex; flex-wrap:nowrap; gap:7px; min-height:35px; overflow-x:auto; padding-bottom:3px; scrollbar-color:#445a7b transparent; }
+    .chip { flex:0 0 auto; padding:7px 10px; border:1px solid #3a526f; background:#182941; border-radius:8px; color:#c7eaf1; font-size:12px; font-weight:750; }
+    .chip.new { border-color:var(--cyan); box-shadow:0 0 14px #67e8f933; }
+    .controls { padding:18px 22px; border:1px solid var(--line); border-radius:18px; background:#101a2d; display:grid; grid-template-columns:auto auto 1fr auto; align-items:center; gap:16px; }
+    .icon-btn { width:48px; min-width:48px; height:48px; padding:0; display:grid; place-items:center; border:1px solid #43607d; border-radius:12px; background:#1b304a; }
+    .icon-btn svg { display:block; width:20px; height:20px; min-height:0; flex:none; overflow:hidden; }
+    #play[data-playing="true"] .play-icon, #play[data-playing="false"] .pause-icon { display:none; }
+    .icon-btn.primary { background:var(--cyan); color:#0b1c29; border-color:var(--cyan); }
+    .icon-btn:hover { filter:brightness(1.17); }
+    .progress { display:flex; align-items:center; gap:12px; }
+    input[type=range] { width:100%; accent-color:var(--cyan); cursor:pointer; }
+    #counter { color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; font-size:14px; }
+    .speed { border:1px solid var(--line); background:#182941; border-radius:9px; padding:9px 12px; font-size:14px; font-weight:750; }
+    .source { color:var(--muted); font-size:12px; line-height:1.35; padding:0 3px; }
+    .source strong { color:#d3e6f5; }
+    @media (max-width:1080px) { .shell{height:auto;min-height:100vh;padding:20px;} .main{grid-template-columns:1fr;overflow:visible;} .graph-wrap{min-height:360px;} svg{min-height:360px;} .event-panel{min-height:500px;} }
+    @media (max-width:620px) { header{align-items:flex-start;flex-direction:column;} .head-actions{flex-wrap:wrap;} .recorded{white-space:normal;} .tabs{flex-wrap:wrap;} .tab{font-size:14px;padding:10px 13px;} .bottom-graph{grid-template-columns:repeat(3,1fr);} .stat{padding:10px;} .stat b{font-size:20px;} .controls{grid-template-columns:auto auto 1fr;gap:8px;} .speed{grid-column:3;justify-self:end;} }
+  </style>
+<link rel="stylesheet" href="demo-light.css?v=cases-9">
+</head>
+<body><script>if(new URLSearchParams(location.search).has("embed"))document.body.classList.add("embedded");</script>
+  <div class="shell">
+    <header>
+      <div><div class="eyebrow">Интерактивное демо · PostgreSQL</div><h1>Как агенты пришли к SQL-решению</h1></div>
+      <div class="head-actions"><a class="back" href="index.html#demo">← К слайдам</a><div class="recorded">Запись реальных трасс · без живого LLM</div></div>
+    </header>
+    <nav class="tabs" aria-label="Архитектура">
+      <button class="tab selected" data-mode="single">01 · Single agent</button>
+      <button class="tab" data-mode="orchestrator">02 · Оркестратор</button>
+      <button class="tab" data-mode="swarm">03 · Swarm</button>
+      <button class="tab" data-mode="board_swarm">04 · Swarm + доска</button>
+    </nav>
+    <div class="main">
+      <section class="panel graph-panel" aria-label="Граф агентов">
+        <div class="panel-head"><h2 id="graph-title">Один агент · один цикл</h2><span class="micro" id="step-label">Шаг 1</span></div>
+        <div class="graph-wrap"><svg id="graph" viewBox="0 0 900 360" role="img" aria-label="Агенты и их переходы"></svg><div class="flow-note" id="flow-note"></div></div>
+        <div class="bottom-graph">
+          <div class="stat" aria-live="polite"><b id="speedup">—</b><small id="metric-scope">итог после завершения поиска</small></div>
+          <div class="stat"><b id="baseline">—</b><small>baseline · медиана</small></div>
+          <div class="stat"><b id="candidate">—</b><small>кандидат · медиана</small></div>
+        </div>
+      </section>
+      <aside class="right">
+        <section class="panel event-panel" aria-label="Трасса событий">
+          <div class="panel-head"><h2>Что произошло</h2><span class="micro">Краткий конспект трассы</span></div>
+          <div class="event-now"><div class="event-line"><span id="kind">ЗАДАЧА</span><span id="time">00:00</span></div><h3 id="summary"></h3><p id="evidence"></p></div>
+          <ol class="feed" id="feed"></ol>
+          <div class="tools"><div class="tools-title">Инструменты и SQL-артефакты</div><div class="chips" id="chips"></div></div>
+        </section>
+      </aside>
+    </div>
+    <div class="controls" aria-label="Управление воспроизведением">
+      <button id="play" class="icon-btn primary" data-playing="false" aria-label="Воспроизвести">
+        <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5 20 12 7 19.5Z" fill="currentColor"/></svg>
+        <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1.5" fill="currentColor"/></svg>
+      </button>
+      <button id="step" class="icon-btn" aria-label="Следующий шаг"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 4.5 8 7.5-8 7.5M18 4.5v15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="progress"><input id="scrubber" type="range" min="0" value="0" aria-label="Позиция в трассе"><span id="counter">1 / 1</span></div>
+      <button id="speed" class="speed" aria-label="Скорость воспроизведения">1×</button>
+    </div>
+    <div class="source"><strong>Источники:</strong> Single, Orchestrator и Swarm — записанные запуски Luna; их SQL отдельно переизмерен на сервере (10 пар). Swarm + доска — один локальный пилот DeepSeek с собственным финальным замером. События и время поиска взяты из трасс. Тексты сокращены; полный SQL и аргументы инструментов здесь не публикуются.</div>
+  </div>
+  <script src="demo-data.js?v=cases-9"></script>
+  <script>
+    (() => {
+      'use strict';
+      const data = window.DEMO_DATA;
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const $ = id => document.getElementById(id);
+      const names = {single:'Single Agent',orchestrator:'Оркестратор',plan_analyst:'Plan Analyst',stats_analyst:'Stats Analyst',query_rewriter:'Query Rewriter',synthesis_rewriter:'Синтезатор',auditor:'Auditor',board:'Общая доска',postgres:'PostgreSQL',validator:'Validator'};
+      const kinds = {start:'СТАРТ',tool:'ИНСТРУМЕНТ',result:'РЕЗУЛЬТАТ',validation:'ПРОВЕРКА',worker_start:'НАЧАЛО РАБОТЫ',worker_end:'ОТВЕТ ВОРКЕРА',handoff:'HANDOFF',board_post:'ЗАПИСЬ НА ДОСКЕ',board_read:'ЧТЕНИЕ ДОСКИ',phase_limit:'ЛИМИТ ФАЗЫ',run_end:'ФИНИШ'};
+      const titles = {single:'Один агент · один цикл',orchestrator:'Оркестратор · параллельная диагностика',swarm:'Swarm · передача управления',board_swarm:'Swarm · параллельный поиск и общая доска'};
+      const notes = {
+        single:'<strong>Один агент</strong> сам вызывает инструменты, строит гипотезу и проверяет SQL.',
+        orchestrator:'<strong>Оркестратор</strong> вызывает роли как инструменты, собирает результаты и выбирает следующий шаг.',
+        swarm:'<strong>Swarm</strong> передаёт управление специалисту через handoff со структурированным состоянием.',
+        board_swarm:'<strong>DeepSeek:</strong> три исследователя параллельно; гипотезы и SQL-артефакты на общей доске. Затем синтез и аудит. Это один локальный пилот.'
+      };
+      const layouts = {
+        single:{nodes:{single:[245,180],postgres:[655,120],validator:[655,255]},edges:[['single','postgres'],['single','validator']]},
+        orchestrator:{nodes:{orchestrator:[150,175],plan_analyst:[450,40],stats_analyst:[450,125],query_rewriter:[450,215],auditor:[450,305],postgres:[755,175]},edges:[['orchestrator','plan_analyst'],['orchestrator','stats_analyst'],['orchestrator','query_rewriter'],['orchestrator','auditor'],['plan_analyst','postgres'],['stats_analyst','postgres'],['query_rewriter','postgres'],['auditor','postgres']]},
+        swarm:{nodes:{plan_analyst:[160,95],stats_analyst:[445,55],query_rewriter:[445,220],auditor:[730,145],postgres:[730,300]},edges:[['plan_analyst','query_rewriter'],['plan_analyst','stats_analyst'],['stats_analyst','query_rewriter'],['query_rewriter','auditor'],['auditor','postgres']]},
+        board_swarm:{nodes:{plan_analyst:[145,72],stats_analyst:[450,72],query_rewriter:[755,72],board:[450,184],synthesis_rewriter:[240,292],auditor:[660,292]},edges:[['plan_analyst','board'],['stats_analyst','board'],['query_rewriter','board'],['board','synthesis_rewriter'],['board','auditor']]}
+      };
+      const deepLink=location.hash.slice(1);
+      let mode=['single','orchestrator','swarm','board_swarm'].includes(deepLink)?deepLink:'single', index=0, timer=null, speedIndex=1;
+      const speeds=[.5,1,2,4];
+      function mk(tag,attrs={}) { const n=document.createElementNS(svgNS,tag); for(const [k,v] of Object.entries(attrs)) n.setAttribute(k,v); return n; }
+      function time(t) { const m=Math.floor(t/60); const s=Math.floor(t%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+      function activeAgents(events,i) {
+        if(mode==='single') return new Set(['single']);
+        if(mode==='swarm') return new Set([events[i].actor]);
+        if(mode==='board_swarm') {
+          const set=new Set();
+          for(const ev of events.slice(0,i+1)) { if(ev.kind==='worker_start') set.add(ev.actor); if(ev.kind==='phase_limit'||ev.kind==='worker_end') set.delete(ev.actor); }
+          if(events[i].actor!=='board') set.add(events[i].actor);
+          if(['board_read','board_post'].includes(events[i].kind)) set.add('board');
+          return set;
+        }
+        const set=new Set(['orchestrator']);
+        for(const ev of events.slice(0,i+1)) { if(ev.kind==='worker_start') set.add(ev.actor); if(ev.kind==='worker_end') set.delete(ev.actor); }
+        if(events[i].kind==='worker_end') set.add(events[i].actor);
+        return set;
+      }
+      function renderGraph(ev,events) {
+        const graph=$('graph'); graph.replaceChildren();
+        const layout=layouts[mode], active=activeAgents(events,index);
+        let route='';
+        if(mode==='swarm') {
+          const handoffs=events.slice(0,index+1).filter(e=>e.kind==='handoff');
+          route=handoffs.length===1?'plan_analyst>query_rewriter':handoffs.length>1?'query_rewriter>auditor':'';
+        }
+        for(const [a,b] of layout.edges) {
+          const [x1,y1]=layout.nodes[a], [x2,y2]=layout.nodes[b];
+          const hot=(mode==='swarm' && route===`${a}>${b}`)||(mode==='orchestrator' && ((a==='orchestrator' && active.has(b))||(a===ev.actor && b==='postgres')))||(mode==='single' && (ev.kind==='tool' ? b==='postgres' : ev.kind==='validation' && b==='validator'))||(mode==='board_swarm' && (a===ev.actor||b===ev.actor) && ['board_post','board_read'].includes(ev.kind));
+          graph.append(mk('line',{x1,y1,x2,y2,class:`edge ${hot?'primary':''} ${mode==='swarm' && a==='stats_analyst'?'ghost':''}`}));
+        }
+        for(const [key,[x,y]] of Object.entries(layout.nodes)) {
+          const isSystem=['postgres','validator'].includes(key);
+          const hot=active.has(key)||(isSystem && ((key==='postgres'&&['tool','result'].includes(ev.kind))||(key==='validator'&&ev.kind==='validation')));
+          const group=mk('g',{class:`node ${hot?'active':''} ${!hot && mode==='swarm' && key==='stats_analyst'?'muted':''}`});
+          const width=['query_rewriter','synthesis_rewriter','orchestrator'].includes(key)?194:172;
+          group.append(mk('rect',{x:x-width/2,y:y-31,width,height:62}));
+          const label=mk('text',{x,y:y-4}); label.textContent=names[key]; group.append(label);
+          const subtitle=mk('text',{x,y:y+18,class:'sub'});
+          if(key==='board') {const soFar=events.slice(0,index+1);subtitle.textContent=`ЗАПИСИ ${soFar.filter(e=>e.kind==='board_post').length} · SQL ${soFar.filter(e=>e.kind==='board_post' && e.tool.startsWith('sql-')).length}`;}
+          else subtitle.textContent=isSystem?'DETERMINISTIC':key==='orchestrator'?'SUPERVISOR':'AGENT';
+          group.append(subtitle);
+          graph.append(group);
+        }
+      }
+      function render() {
+        const pack=data.modes[mode], events=pack.events, ev=events[index];
+        document.querySelectorAll('.tab').forEach(b=>{b.classList.toggle('selected',b.dataset.mode===mode);b.setAttribute('aria-current',b.dataset.mode===mode?'true':'false');});
+        $('graph-title').textContent=titles[mode]; $('step-label').textContent=`Шаг ${index+1} из ${events.length}`;
+        $('flow-note').innerHTML=notes[mode];
+        const local=mode==='board_swarm';
+        const complete=index===events.length-1;
+        document.body.classList.toggle('replay-complete',complete);
+        $('metric-scope').textContent=complete?(local?'локальный пилот · 1 запуск':'сервер · медиана 10 пар'):'итог после завершения поиска';
+        $('speedup').textContent=complete?(local?pack.metrics.speedup:pack.metrics.serverPairedSpeedup).toFixed(2)+'×':'—';
+        $('baseline').textContent=complete?((local?pack.metrics.baselineMs:pack.metrics.serverBaselineMs)/1000).toFixed(2)+' c':'—';
+        $('candidate').textContent=complete?((local?pack.metrics.candidateMs:pack.metrics.serverCandidateMs)/1000).toFixed(2)+' c':'—';
+        $('kind').textContent=kinds[ev.kind]+' · '+names[ev.actor]; $('time').textContent=time(ev.t);
+        $('summary').textContent=ev.summary; $('evidence').textContent=ev.evidence;
+        $('scrubber').max=events.length-1; $('scrubber').value=index; $('counter').textContent=`${index+1} / ${events.length}`;
+        renderGraph(ev,events);
+        const feed=$('feed'); feed.replaceChildren();
+        for(let i=0;i<=index;i++) {
+          const item=events[i], li=document.createElement('li'); li.className=i===index?'current':'';
+          const t=document.createElement('span'); t.className='time'; t.textContent=time(item.t);
+          const txt=document.createElement('span'); txt.className='text';
+          const who=document.createElement('span'); who.className='who'; who.textContent=names[item.actor]+(item.tool?' · '+item.tool:'');
+          txt.append(who,document.createTextNode(item.summary)); li.append(t,txt); li.addEventListener('click',()=>seek(i)); feed.append(li);
+        }
+        requestAnimationFrame(()=>{if(feed.isConnected) feed.scrollTop=feed.scrollHeight;});
+        const seen=events.slice(0,index+1).filter(e=>e.kind==='tool'||e.kind==='validation'||(e.kind==='board_post'&&e.tool)).slice(-5), chips=$('chips'); chips.replaceChildren();
+        for(const item of seen) { const chip=document.createElement('span'); chip.className='chip'+(item===ev?' new':''); chip.textContent=item.kind==='board_post'?'SQL · '+item.tool:item.tool; chips.append(chip); }
+        if(!seen.length) { const blank=document.createElement('span'); blank.className='micro'; blank.textContent='Пока нет вызовов'; chips.append(blank); }
+      }
+      function stop() { clearInterval(timer); timer=null; $('play').dataset.playing='false'; $('play').setAttribute('aria-label','Воспроизвести'); }
+      function play() { if(timer){stop();return;} $('play').dataset.playing='true'; $('play').setAttribute('aria-label','Пауза'); timer=setInterval(()=>{const n=data.modes[mode].events.length;if(index>=n-1){stop();return;} index++;render();},1100/speeds[speedIndex]); }
+      function seek(i) { index=Math.max(0,Math.min(i,data.modes[mode].events.length-1)); render(); }
+      document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{stop();mode=b.dataset.mode;index=0;history.replaceState(null,'','#'+mode);render();}));
+      $('play').addEventListener('click',play);
+      $('step').addEventListener('click',()=>{stop();seek(index+1);});
+      $('scrubber').addEventListener('input',e=>{stop();seek(Number(e.target.value));});
+      $('speed').addEventListener('click',()=>{speedIndex=(speedIndex+1)%speeds.length;$('speed').textContent=speeds[speedIndex]+'×';if(timer){stop();play();}});
+      document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight'){stop();seek(index+1);}if(e.key==='ArrowLeft'){stop();seek(index-1);}if(e.code==='Space'){e.preventDefault();play();}});
+      document.addEventListener('keydown',e=>{if(window.parent!==window && ['PageDown','PageUp'].includes(e.key)){e.preventDefault();window.parent.postMessage({type:'deck-nav',direction:e.key==='PageDown'?1:-1},'*');}});
+      render();
+    })();
+  </script>
+</body>
+</html>

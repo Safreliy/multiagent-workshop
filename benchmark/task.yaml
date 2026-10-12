@@ -1,0 +1,18 @@
+id: retail-customer-summary-v1
+description: >-
+  Optimize the supplied PostgreSQL query, preserving its exact unordered multiset
+  result, column order, and types. Maximize measured speedup. Query rewriting only:
+  data, schema, indexes, statistics and database settings must not change.
+  Investigate the execution plan, SQL structure, indexes and selectivity as useful.
+  Use submit_candidate to submit your final SQL. Validation on this fixture is
+  necessary but you must also reason about semantics, including NULLs and duplicates.
+baseline_file: ../db/baseline.sql
+benchmark_samples: 5
+warmup: 1
+statement_timeout_ms: 15000
+max_llm_calls: 36
+max_tool_calls: 64
+temperature: 0
+request_timeout_s: 180
+max_output_tokens: 8192
+max_model_retries: 1
